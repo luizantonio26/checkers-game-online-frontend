@@ -13,3 +13,8 @@
 .light {
     background-color: #e3b778;
 }
+
+.icon {
+    width: 64px;
+    height: 64px;
+}

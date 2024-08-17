@@ -1,5 +1,6 @@
 import CellsModel from "./CellsModel";
 import { Labels } from "./Labels";
+import { PieceModel } from "./PieceModel";
 
 
 export default class BoardModel {
@@ -19,5 +20,13 @@ export default class BoardModel {
             }
             this.cells.push(row);
         }
+    }
+
+    getCell(x: number, y: number) {
+        return this.cells[y][x];
+    }
+
+    addFigure(label: Labels, x: number, y: number) {
+        new PieceModel(label, this.getCell(x, y));
     }
 }
