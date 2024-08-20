@@ -1,7 +1,7 @@
 import { Fragment, ReactElement } from 'react';
 import BoardModel from '../../models/BoardModel';
+import { getBoardSizes } from '../../utils/utils';
 import { Cell } from '../Cell';
-import './Board.css';
 
 type BoardProps = {
     board: BoardModel;
@@ -9,8 +9,9 @@ type BoardProps = {
 };
 
 export const Board = ({ board, onSetBoard }: BoardProps): ReactElement => {
+    const sizes = getBoardSizes();
     return (
-        <div className="board">
+        <div className={`flex flex-wrap mt-16 w-[400px] h-[400px]`}>
             {
                 board.cells.map((row, index) => (
                     <Fragment key={index}>
