@@ -1,44 +1,31 @@
-import { useEffect, useState } from 'react';
-import './App.css';
-import { Board } from './components/Board/Board';
-import data from './example.json';
-import BoardModel from './models/BoardModel';
-import { Labels } from './models/Labels';
-
+import { Route, Routes } from 'react-router-dom';
+import "./app.css";
+import { AuthProvider } from './components/Auth/AuthContext';
+import { ProtectedRoute } from './components/Auth/ProtectedRoute';
+import { Header } from './components/Header/Header';
+import { GameRoom } from './pages/GameRoom/GameRoom';
+import { Home } from "./pages/Home/Home";
+import { Login } from './pages/Login/Login';
+import { Register } from './pages/Register/Register';
 function App() {
-  const [board, setBoard] = useState<BoardModel>(new BoardModel())
-  const [gameState, setGameState] = useState<Boolean | {
-    piece_color: string;
-    piece_type: string;
-    piece_position: number[];
-  }>();
-
-
-  function showState(board: BoardModel) {
-    for (let row = 0; row < data.state.length; row++) {
-      for (let col = 0; col < data.state[row].length; col++) {
-        if (typeof (data.state[row][col]) === "object") {
-          board.addFigure(data.state[row][col].piece_color === "black" ? Labels.Dark : Labels.Light, data.state[row][col].piece_position[1], data.state[row][col].piece_position[0]);
-        }
-      }
-    }
-  }
-
-  const restart = () => {
-    const newBoard = new BoardModel();
-    newBoard.createCells();
-    setGameState(data.state);
-    showState(newBoard);
-    setBoard(newBoard);
-  }
-
-  useEffect(() => {
-    restart();
-  }, [])
-
   return (
-    <div className="App">
-      <Board board={board} onSetBoard={setBoard} />
+    <div className="h-screen flex flex-col">
+      <AuthProvider>
+        <Header />
+        <div className='flex justify-center items-center w-full h-full'>
+
+          <Routes>
+            <Route path="/" element={
+              <ProtectedRoute>
+                <Home />
+              </ProtectedRoute>
+            } />
+            <Route path="/gameroom/:roomName" element={<ProtectedRoute><GameRoom /></ProtectedRoute>} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+          </Routes>
+        </div>
+      </AuthProvider>
     </div>
   )
 }
