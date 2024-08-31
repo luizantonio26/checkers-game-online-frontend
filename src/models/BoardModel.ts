@@ -1,6 +1,6 @@
 import CellsModel from "./CellsModel";
 import { Labels } from "./Labels";
-import { PieceModel } from "./PieceModel";
+import { DamaModel, PieceModel } from "./PieceModel";
 
 
 export default class BoardModel {
@@ -22,11 +22,23 @@ export default class BoardModel {
         }
     }
 
+    setAvailable(x: number, y: number, available: boolean) {
+        this.getCell(x, y).available = available;
+    }
+
     getCell(x: number, y: number) {
         return this.cells[y][x];
     }
 
     addFigure(label: Labels, x: number, y: number) {
         new PieceModel(label, this.getCell(x, y));
+    }
+
+    addPlayer(x: number, y: number, player: string | null) {
+        this.getCell(x, y).player = player;
+    }
+
+    addDama(label: Labels, x: number, y: number) {
+        new DamaModel(label, this.getCell(x, y));
     }
 }
