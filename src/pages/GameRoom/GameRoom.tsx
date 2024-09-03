@@ -15,7 +15,7 @@ import CellsModel from "../../models/CellsModel";
 import { Labels } from "../../models/Labels";
 import { addGameInfo, setBlackPlayer, setGameHasStarted, setGameState, setPlayerTurn, setWhitePlayer } from "../../utils/gameSlice";
 import { RootState } from "../../utils/store";
-
+const wsUrl = import.meta.env.VITE_API_WS_URL
 
 interface GameState {
     piece_color: string;
@@ -30,7 +30,7 @@ export const GameRoom = (): ReactElement => {
     const gameState = useSelector((state: RootState) => state.game.gameState);
     const [messages, setMessages] = useState<MessageProps[]>([]);
     const [message, setMessage] = useState<string>("");
-    const socket = useSocket("ws://localhost:8000/gameroom/" + roomName + "/");
+    const socket = useSocket(`${wsUrl}/gameroom/${roomName}/`);
     const { user } = useAuth();
     const dispatch = useDispatch();
     const [conectedPlayers, setConectedPlayers] = useState<string[]>([]);
@@ -143,8 +143,8 @@ export const GameRoom = (): ReactElement => {
     }
 
     const movePiece = (from: CellsModel, to: CellsModel) => {
-        const start_pos = [from.x + 1, from.y + 1];
-        const end_pos = [to.x + 1, to.y + 1];
+        const start_pos = [from.x, from.y];
+        const end_pos = [to.x, to.y];
 
         socket.sendMessage({ action: "make_move", data: { start_pos, end_pos } });
     }
