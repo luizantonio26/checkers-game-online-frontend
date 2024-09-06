@@ -6,10 +6,11 @@ import { Header } from './components/Header/Header';
 import { GameRoom } from './pages/GameRoom/GameRoom';
 import { Home } from "./pages/Home/Home";
 import { Login } from './pages/Login/Login';
+import { Profile } from './pages/Profile/Profile';
 import { Register } from './pages/Register/Register';
 function App() {
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-vh w-vh flex flex-col">
       <AuthProvider>
         <Header />
         <div className='flex justify-center items-center w-full h-full'>
@@ -21,6 +22,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/gameroom/:roomName" element={<ProtectedRoute><GameRoom /></ProtectedRoute>} />
+            <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
           </Routes>
