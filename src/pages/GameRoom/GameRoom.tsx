@@ -141,13 +141,27 @@ export const GameRoom = (): ReactElement => {
             setMessage("");
         }
     }
-
     const movePiece = (from: CellsModel, to: CellsModel) => {
         const start_pos = [from.x, from.y];
         const end_pos = [to.x, to.y];
 
         socket.sendMessage({ action: "make_move", data: { start_pos, end_pos } });
     }
+
+    const copyToClipboard = () => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(window.location.href)
+                .then(() => {
+                    console.log('Link copiado para a área de transferência');
+                })
+                .catch(err => {
+                    console.error('Falha ao copiar o link: ', err);
+                });
+        } else {
+            console.error('Clipboard API não suportada');
+        }
+    };
+
     const restart = () => {
         const newBoard = new BoardModel();
         newBoard.createCells();
@@ -208,7 +222,7 @@ export const GameRoom = (): ReactElement => {
                                     }
                                     <div className="flex flex-row items-center gap-2 mt-4">
                                         <span className="text-blue-200">Link da sala: <a className="text-white underline">{window.location.href}</a></span>
-                                        <FaCopy className="cursor-pointer text-white" onClick={() => navigator.clipboard.writeText(window.location.href)} />
+                                        <FaCopy className="cursor-pointer text-white" onClick={copyToClipboard} />
                                     </div>
                                 </div>
                             }
