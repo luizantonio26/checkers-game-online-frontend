@@ -17,10 +17,17 @@ import { RootState } from "../../utils/store";
 import { showState } from "../../utils/utils";
 const wsUrl = import.meta.env.VITE_API_WS_URL
 
-interface GameState {
-    piece_color: string;
-    piece_type: string;
-    piece_position: number[];
+interface SocketMessageData {
+    username?: string;
+    nickname?: string;
+    message?: string;
+    player?: string;
+    game_state?: any;
+    game_has_started?: boolean;
+    move_info?: any;
+    players?: string[];
+    host?: string;
+    winner?: string;
 }
 
 export const GameRoom = (): ReactElement => {
@@ -83,9 +90,9 @@ export const GameRoom = (): ReactElement => {
                     dispatch(setGameHasStarted(false));
                     dispatch(setGameState([]));
                 }
-                setMessages([...messages, { nickname: socket.message.data.nickname, message: "has left the room" }])
+                setMessages([...messages, { nickname: socket.message.data.nickname as string, message: "has left the room" }])
             } else if (socket.message.type == "join" && "nickname" in socket.message.data) {
-                setMessages([...messages, { nickname: socket.message.data.nickname, message: "has joined the room" }])
+                setMessages([...messages, { nickname: socket.message.data.nickname as string, message: "has joined the room" }])
             } else if (socket.message.type == "surrender" && "winner" in socket.message.data) {
                 dispatch(setGameHasStarted(false));
                 dispatch(setGameState([]));
