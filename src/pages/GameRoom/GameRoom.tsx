@@ -12,9 +12,9 @@ import pieceImgDark from "../../images/brown.png";
 import pieceImgLight from "../../images/light.png";
 import BoardModel from "../../models/BoardModel";
 import CellsModel from "../../models/CellsModel";
-import { Labels } from "../../models/Labels";
 import { addGameInfo, setBlackPlayer, setGameHasStarted, setGameState, setPlayerTurn, setWhitePlayer } from "../../utils/gameSlice";
 import { RootState } from "../../utils/store";
+import { showState } from "../../utils/utils";
 const wsUrl = import.meta.env.VITE_API_WS_URL
 
 interface GameState {
@@ -64,18 +64,28 @@ export const GameRoom = (): ReactElement => {
             } else if (socket.message.type === "make_move" && "move_info" in socket.message.data) {
                 const data = socket.message.data;
                 console.log("move_info", data);
+
                 dispatch(addGameInfo(data.move_info));
                 dispatch(setGameState(data.game_state));
-                console.log("player_turn", data.current_player);
+                if (data.status === "Finished") {
+                    dispatch(setGameHasStarted(false));
+                    dispatch(setGameState([]));
+                    dispatch(addGameInfo("Game ended"));
+                }
                 data.current_player != playerTurn ? dispatch(setPlayerTurn(data.current_player)) : console.log("player_turn after dispatch", playerTurn);
 
             } else if (socket.message.type === "show_state" && "state" in socket.message.data) {
                 const data = socket.message.data;
-                showState(board, data.state);
-            } else if (socket.message.type === "leave") {
-                dispatch(setGameHasStarted(false));
-                dispatch(setGameState([]));
-                dispatch(addGameInfo("Game ended"));
+                showState(board, data.state, blackPlayer, whitePlayer);
+            } else if (socket.message.type === "leave" && "nickname" in socket.message.data) {
+
+                if (gameHasStarted) {
+                    dispatch(setGameHasStarted(false));
+                    dispatch(setGameState([]));
+                }
+                setMessages([...messages, { nickname: socket.message.data.nickname, message: "has left the room" }])
+            } else if (socket.message.type == "join" && "nickname" in socket.message.data) {
+                setMessages([...messages, { nickname: socket.message.data.nickname, message: "has joined the room" }])
             } else if (socket.message.type == "surrender" && "winner" in socket.message.data) {
                 dispatch(setGameHasStarted(false));
                 dispatch(setGameState([]));
@@ -103,24 +113,6 @@ export const GameRoom = (): ReactElement => {
             dispatch(setGameState([]));
         }
     }, [winner])
-
-    function showState(board: BoardModel, data: any) {
-        for (let row = 0; row < data.length; row++) {
-            for (let col = 0; col < data[row].length; col++) {
-                if (typeof (data[row][col]) === "object") {
-                    const x = data[row][col].piece_position[1];
-                    const y = data[row][col].piece_position[0];
-                    const player = data[row][col].piece_color === "black" ? blackPlayer : whitePlayer
-                    const label = data[row][col].piece_color === "black" ? Labels.Dark : Labels.Light
-
-                    board.addPlayer(x, y, player)
-                    data[row][col].piece_type === "Dama" ? board.addDama(label, x, y) : board.addFigure(label, x, y)
-                } else {
-                    board.setAvailable(row, col, data[row][col]);
-                }
-            }
-        }
-    }
 
     useEffect(() => {
         restart();
@@ -165,7 +157,7 @@ export const GameRoom = (): ReactElement => {
     const restart = () => {
         const newBoard = new BoardModel();
         newBoard.createCells();
-        showState(newBoard, gameState);
+        showState(newBoard, gameState, blackPlayer, whitePlayer);
         setBoard(newBoard);
     }
     const handleSurrender = () => {

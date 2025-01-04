@@ -1,4 +1,6 @@
 import { ReactElement } from "react";
+import { Link } from "react-router-dom";
+import { MatchMoviments } from "../../models/MatchHistory";
 import { useAuth } from "../Auth/AuthContext";
 
 
@@ -9,9 +11,10 @@ type CardHistoryProps = {
     date: string;
     time: string;
     result: string;
+    movements?: MatchMoviments[]
 }
 
-export const CardHistory = ({ winner, whitePlayer, blackPlayer, date, time, result }: CardHistoryProps): ReactElement => {
+export const CardHistory = ({ winner, whitePlayer, blackPlayer, date, time, result, movements }: CardHistoryProps): ReactElement => {
     const { user } = useAuth();
 
     return (
@@ -27,7 +30,7 @@ export const CardHistory = ({ winner, whitePlayer, blackPlayer, date, time, resu
                 <p className="text-white text-sm">Result: <span>{result}</span></p>
             </div>
             <div className="border-l p-3 flex justify-center items-center">
-                <p className="text-blue-400">Detail</p>
+                <Link to={"/match_detail/"} state={{ movements: movements }} className="text-blue-400">Detail</Link>
             </div>
         </div>
     )

@@ -13,6 +13,13 @@ export interface ChatMessage {
     };
 }
 
+export interface ConnectionMessage {
+    type: string;
+    data: {
+        nickname: string;
+    };
+}
+
 export interface ShowPlayersMessage {
     type: string;
     data: {
@@ -49,6 +56,7 @@ export interface MakeMoveMessage {
         "next_player": string;
         "turned_dama": boolean;
         "piece_moved": number[];
+        "status": string;
     }
 }
 

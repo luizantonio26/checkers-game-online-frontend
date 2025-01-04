@@ -1,6 +1,7 @@
 
 
-class MatchMoviments {
+export class MatchMoviments {
+    id: number;
     piece_color: string;
     piece_type: string;
     state_before_move: Array<Array<boolean | { piece_color: string; piece_type: string; piece_position: number[] }>>;
@@ -12,6 +13,7 @@ class MatchMoviments {
     destiny_y: number;
 
     constructor(
+        id: number,
         piece_color: string,
         piece_type: string,
         state_before_move: Array<Array<boolean | { piece_color: string; piece_type: string; piece_position: number[] }>>,
@@ -21,6 +23,7 @@ class MatchMoviments {
         origin_y: number,
         destiny_x: number,
         destiny_y: number) {
+        this.id = id;
         this.piece_color = piece_color;
         this.piece_type = piece_type;
         this.state_before_move = state_before_move;
@@ -41,9 +44,9 @@ export class MatchHistory {
     black_player: string;
     winner: string;
     game_status: string;
-    moviments?: MatchMoviments[];
+    movements: MatchMoviments[];
 
-    constructor(id: number, game_id: string, match_date: string | Date, white_player: string, black_player: string, winner: string, game_status: string, moviments?: MatchMoviments[]) {
+    constructor(id: number, game_id: string, match_date: string | Date, white_player: string, black_player: string, winner: string, game_status: string, movements: MatchMoviments[]) {
         this.id = id;
         this.match_date = new Date(match_date); // Converte string ISO para Date
         this.white_player = white_player;
@@ -51,6 +54,6 @@ export class MatchHistory {
         this.winner = winner;
         this.game_status = game_status;
         this.game_id = game_id;
-        this.moviments = moviments;
+        this.movements = movements;
     }
 }

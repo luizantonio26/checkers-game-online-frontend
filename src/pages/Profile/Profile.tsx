@@ -1,4 +1,5 @@
 import { ReactElement, useEffect, useState } from "react";
+import { FaEdit } from "react-icons/fa";
 import { useAuth } from "../../components/Auth/AuthContext";
 import { CardHistory } from "../../components/CardHistory/CardHistory";
 import { MatchHistory } from "../../models/MatchHistory";
@@ -9,14 +10,13 @@ export const Profile = (): ReactElement => {
     const { user } = useAuth();
     const [matchHistory, setMatchHistory] = useState<MatchHistory[]>();
 
-    const getMatchHistory = async () => {
-        const history = await UserService.getMatchHistory();
-        setMatchHistory(history);
-    }
-
     useEffect(() => {
+        const getMatchHistory = async () => {
+            const history = await UserService.getMatchHistory();
+            setMatchHistory(history);
+        }
+
         getMatchHistory();
-        console.log(matchHistory)
     }, [])
 
     return (
@@ -29,11 +29,18 @@ export const Profile = (): ReactElement => {
                     />
                 </div>
                 <div>
-                    <h1 className="text-white mt-4 text-2xl">{user?.first_name + " " + user?.last_name}<span className="text-blue-500 text-sm font-bold"> @{user?.nickname}</span></h1>
+                    <div className="flex flex-row align-middle gap-2">
+                        <h1 className=" text-white mt-4 text-2xl">{user?.first_name + " " + user?.last_name}
+
+                            <span className="text-blue-500 text-sm font-bold"> @{user?.nickname}</span>
+                        </h1>
+                        <FaEdit className="text-white self-end" />
+                    </div>
                     <p className="text-white mt-4 start">Email: {user?.email}</p>
+
                 </div>
             </div>
-            <div className="flex flex-col items-center mt-4">
+            <div className="flex flex-col  items-center mt-4">
                 <h1 className="text-white mt-4 text-2xl">Match History</h1>
                 <div className="flex flex-col gap-4 sm:gap-2 mt-8">
                     {/* <CardHistory winner="Cleber" whitePlayer="Cleber" blackPlayer={user?.nickname ? user?.nickname : ""} date="10/10/2022" time="12:00" result="1x0" /> */}
@@ -51,6 +58,7 @@ export const Profile = (): ReactElement => {
                                 })}
                                 time={"12:00"}
                                 result={"1x0"}
+                                movements={match.movements}
                             />
                         ))
                     }
