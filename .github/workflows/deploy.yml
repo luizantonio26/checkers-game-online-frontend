@@ -40,6 +40,6 @@ jobs:
 
             ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
 
-            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "mkdir -p ~/var/www/cgfrontend"
-            scp -o StrictHostKeyChecking=no -r ./dist/* $VPS_USER@$VPS_HOST:~/var/www/cgfrontend/
-            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "cd ~/var/www/cgfrontend"
+            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "mkdir -p /var/www/cgfrontend"
+            scp -o StrictHostKeyChecking=no -r ./dist/* $VPS_USER@$VPS_HOST:/var/www/cgfrontend/
+            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "cd /var/www/cgfrontend"
