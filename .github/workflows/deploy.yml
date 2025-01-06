@@ -1,0 +1,36 @@
+name: Deploy to VPS
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+        - name: Checkout code
+          uses: actions/checkout@v2
+
+        - name: Set up Node.js
+          uses: actions/setup-node@v4
+          with:
+            node-version: 'latest'
+
+        - name: Install dependencies
+          run: npm install
+
+        - name: Build the project
+          run: npm run build
+
+        - name: Deploy to VPS
+          env:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            VPS_HOST: ${{ secrets.VPS_HOST }}
+            VPS_USER: ${{ secrets.VPS_USER }}
+          run: |
+            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+            ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "mkdir -p ~/app"
+            ssh $VPS_USER@$VPS_HOST "mkdir -p ~/var/www/cgfrontend"
+            scp -r ./build/* $VPS_USER@$VPS_HOST:~/var/www/cgfrontend/
+            ssh $VPS_USER@$VPS_HOST "cd ~/app && npm install --production"
