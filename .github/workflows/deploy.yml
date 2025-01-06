@@ -29,8 +29,13 @@ jobs:
             VPS_HOST: ${{ secrets.VPS_HOST }}
             VPS_USER: ${{ secrets.VPS_USER }}
           run: |
-            echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-            ssh -o StrictHostKeyChecking=no $VPS_USER@$VPS_HOST "mkdir -p ~/app"
+            mkdir -p ~/.ssh
+            echo "$PRIVATE_SSH_KEY" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keygen -p -f ~/.ssh/id_rsa
+            eval $(ssh-agent -s)
+            ssh-add ~/.ssh/id_rsa
+            
             ssh $VPS_USER@$VPS_HOST "mkdir -p ~/var/www/cgfrontend"
             scp -r ./build/* $VPS_USER@$VPS_HOST:~/var/www/cgfrontend/
             ssh $VPS_USER@$VPS_HOST "cd ~/app && npm install --production"
