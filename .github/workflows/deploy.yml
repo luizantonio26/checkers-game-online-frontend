@@ -26,11 +26,6 @@ jobs:
         - name: Build the project
           run: npm run build
         
-        - name: Ensure correct permissions on the VPS
-          run: |
-            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "sudo chown -R $VPS_USER:$VPS_USER /var/www/cgfrontend"
-            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "sudo chmod -R 755 /var/www/cgfrontend"
-        
         - name: Deploy to VPS
           env:
             SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
@@ -45,6 +40,6 @@ jobs:
 
             ssh-keyscan -H $VPS_HOST >> ~/.ssh/known_hosts
 
-            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "sudo mkdir -p /var/www/cgfrontend"
+            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "sudo mkdir -p /var/www/cgfrontend && sudo chown -R $VPS_USER:$VPS_USER /var/www/cgfrontend"
             scp -o StrictHostKeyChecking=no -r ./dist/* $VPS_USER@$VPS_HOST:/var/www/cgfrontend/
             ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "cd /var/www/cgfrontend"
