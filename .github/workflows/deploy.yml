@@ -25,7 +25,12 @@ jobs:
 
         - name: Build the project
           run: npm run build
-
+        
+        - name: Ensure correct permissions on the VPS
+          run: |
+            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "sudo chown -R $VPS_USER:$VPS_USER /var/www/cgfrontend"
+            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "sudo chmod -R 755 /var/www/cgfrontend"
+        
         - name: Deploy to VPS
           env:
             SSH_PRIVATE_KEY: ${{ secrets.PRIVATE_SSH_KEY }}
