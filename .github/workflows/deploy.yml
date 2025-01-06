@@ -21,7 +21,7 @@ jobs:
           run: echo "${{ secrets.ENV_FILE }}" > .env
 
         - name: Install dependencies
-          run: npm install
+          run: npm install --production
 
         - name: Build the project
           run: npm run build
@@ -42,4 +42,4 @@ jobs:
 
             ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "mkdir -p ~/var/www/cgfrontend"
             scp -o StrictHostKeyChecking=no -r ./dist/* $VPS_USER@$VPS_HOST:~/var/www/cgfrontend/
-            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "cd ~/var/www/cgfrontend && npm install --production"
+            ssh $VPS_USER@$VPS_HOST -o StrictHostKeyChecking=no "cd ~/var/www/cgfrontend"
